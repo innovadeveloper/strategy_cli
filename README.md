@@ -77,6 +77,12 @@ uv tool run wg-cli
 uv tool uninstall wg-cli
 ```
 
+```sh
+
+twine upload --repository artifactory_abexacloud dist/*
+
+uv tool install plottext==0.1.0 --index "https://artifactory-service.abexacloud.com/repository/pypi-hosted/simple/" --force-reinstall
+```
 
 ## Creación de ficheros de configuración para credenciales de Artifactory
 

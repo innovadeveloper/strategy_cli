@@ -23,7 +23,7 @@ index-url = "https://artifactory-service.abexacloud.com/repository/pypi-hosted/s
 extra-index-url = ["https://pypi.org/simple/"]
 
 [project.scripts]
-app-cli = "plottext.app:main"
+trading-cli = "plottext.app:main"
 
 [build-system]
 requires = ["hatchling"]
