@@ -1,7 +1,7 @@
 
 from rich.console import Console
 from rich.panel import Panel
-from prompt_toolkit import prompt
+from prompt_toolkit import PromptSession
 from datetime import datetime
 
 from rich.table import Table
@@ -19,6 +19,7 @@ from plottext.infrastructure.service.config import CONFIGS, DATE_RANGES
 
 
 console = Console()
+_session = PromptSession()
 
 # ========================
 # home_screen
@@ -29,24 +30,13 @@ async def home_screen():
 
     console.print("1. View stocks (Keep/Purged)")
     console.print("2. Run strategy of day")
-    console.print("3. Run backtesting")
-    console.print("4. Download stockfiles")
-    console.print("5. Load configfiles")
+    # console.print("3. Run backtesting")
+    # console.print("4. Download stockfiles")
+    # console.print("5. Load configfiles")
     console.print("6. Exit program")
 
-    option = prompt("Select option: ")
+    option = await _session.prompt_async("Select option: ")
     return option
-
-
-# async def fetch_data(symbol):
-#     # df = yf.download("AAPL", period="2mo", interval="1d")
-#     return await asyncio.to_thread(
-#         yf.download,
-#         symbol,
-#         period="2mo",
-#         interval="1d"
-#     )
-
 
 
 # ========================
@@ -111,7 +101,6 @@ async def run_strategy_of_day_screen():
 
     signal_table = df_to_table_ritch(stocks_df[["ticker", "date", "entry_price", "sl", "tp", "sl_amount", "tp_amount", "resistance_type"]])
     console.print(signal_table)
-    # console.print(table)
 
     input("\nEnter para volver...")
 
