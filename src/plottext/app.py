@@ -12,6 +12,8 @@ import sys
 
 from plottext.ui.screens.terminal_screens import home_screen, keep_purged_stocks_screen, run_strategy_of_day_screen
 
+# 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-kb
+
 
 # ========================
 # LOOP PRINCIPAL
