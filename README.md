@@ -107,3 +107,32 @@ login admin
 password admin
 ```
 
+## Pyinstaller (empaquetado de ejecutable)
+
+```md
+┌───────────────────────────────────────────────────────────────────────────────────────┬────────────────────────────────────────────────────────────────────────┬────────────────────────────────────────────────────────────────────────────────────────────┐
+│                             Error al ejecutar el binario                              │                                 Causa                                  │                                          Solución                                          │
+├───────────────────────────────────────────────────────────────────────────────────────┼────────────────────────────────────────────────────────────────────────┼────────────────────────────────────────────────────────────────────────────────────────────┤
+│ ModuleNotFoundError: No module named 'X'                                              │ Import dinámico que PyInstaller no vio                                 │ agregar 'X' a hiddenimports, o si es un paquete con submódulos con plugins (X.foo,         │
+│                                                                                       │                                                                        │ X.bar...) usar collect_submodules('X')                                                     │
+├───────────────────────────────────────────────────────────────────────────────────────┼────────────────────────────────────────────────────────────────────────┼────────────────────────────────────────────────────────────────────────────────────────────┤
+│ FileNotFoundError buscando un .json, .ttf, .css, plantilla, etc. dentro de            │ El paquete trae recursos no-Python que PyInstaller no empaqueta por    │ collect_data_files('X')                                                                    │
+│ site-packages/X/...                                                                   │ defecto                                                                │                                                                                            │
+├───────────────────────────────────────────────────────────────────────────────────────┼────────────────────────────────────────────────────────────────────────┼────────────────────────────────────────────────────────────────────────────────────────────┤
+│ ImportError: DLL load failed (Windows) / Library not loaded (dylib, macOS) / .so:     │ Extensión compilada (C/C++/Rust) o librería nativa que el import       │ collect_dynamic_libs('X')                                                                  │
+│ cannot open shared object (Linux)                                                     │ estático no detecta como binario                                       │                                                                                            │
+└───────────────────────────────────────────────────────────────────────────────────────┴────────────────────────────────────────────────────────────────────────┴────────────────────────────────────────────────────────────────────────────────────────────┘
+
+```
+
+```sh
+
+uv add --dev pyinstaller
+
+uv run pyinstaller --onefile src/plottext/app.py
+
+    # FileNotFoundError: [Errno 2] No such file or directory: '/var/folders/_n 9bdk_rbx6gnbd8cbp720393c0000gn/T/_MEI3TLpsf/backtesting/autoscale_cb.js'
+
+uv run pyinstaller app.spec
+
+```
