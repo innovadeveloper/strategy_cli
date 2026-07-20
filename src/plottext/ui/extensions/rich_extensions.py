@@ -7,6 +7,51 @@ import pandas as pd
 from datetime import datetime
 
 
+from rich.table import Table
+from rich.text import Text
+from rich.console import Console
+import pandas as pd
+
+console = Console()
+
+# def df_to_table_ritch(df, max_rows=None, index_name=None):
+#     """Muestra DataFrame con colores según columna 'style'"""
+#     table = Table(show_header=True, header_style="bold cyan")
+    
+#     # Configurar índice
+#     idx_label = index_name or df.index.name or "#"
+#     table.add_column(idx_label, style="bold cyan")
+    
+#     # Agregar columnas (excepto 'style' si no quieres mostrarla)
+#     for col in df.columns:
+#         if col != 'style':  # Ocultar columna 'style'
+#             table.add_column(str(col))
+    
+#     # Procesar filas
+#     for i, (idx, row) in enumerate(df.iterrows()):
+#         if max_rows and i >= max_rows:
+#             break
+        
+#         # ✅ Obtener el color de la columna 'style'
+#         color = row.get('style', 'white')  # Default: white si no existe
+        
+#         # Crear índice formateado
+#         idx_text = Text(str(idx), style=f"bold {color}")
+        
+#         # Formatear cada celda con el color correspondiente
+#         row_cells = []
+#         for col in df.columns:
+#             if col != 'style':  # No mostrar la columna 'style'
+#                 value = row[col]
+#                 # ✅ Aplicar el color a toda la celda
+#                 row_cells.append(Text(str(value), style=color))
+        
+#         # ✅ Aplicar el color a toda la fila
+#         table.add_row(idx_text, *row_cells, style=color)
+    
+#     return table
+
+
 def df_to_table_ritch(df, max_rows=None, precision=2, index_name=None):
     """
     Muestra cualquier DataFrame como tabla Rich
@@ -33,9 +78,11 @@ def df_to_table_ritch(df, max_rows=None, precision=2, index_name=None):
     for i, (idx, row) in enumerate(df.iterrows()):
         if max_rows and i >= max_rows:
             break
+        color = row.get('style', 'white')  # Default: white si no existe
         
         # Formatear índice
         idx_formatted = _format_value(idx)
+        # idx_text = Text(str(idx), style=f"bold {color}")
         
         # Formatear fila
         row_values = []

@@ -15,6 +15,8 @@ from plottext.ui.extensions.rich_extensions import df_to_table_ritch, two_panels
 from plottext.infrastructure.service.backtest_runner import run_backtest_all_tickers_current_day_async
 from plottext.infrastructure.service.config import CONFIGS, DATE_RANGES
 
+import pandas as pd
+
 
 
 
@@ -99,7 +101,12 @@ async def run_strategy_of_day_screen():
         stocks_df = await run_backtest_all_tickers_current_day_async(data_nasdaq100_by_date, conditions=CONFIGS["bollinger__long__full"], investment_amount=investment_amount)
     stocks_df = stocks_df[stocks_df["tipo"] != "NINGUNA"]
 
-    signal_table = df_to_table_ritch(stocks_df[["ticker", "date", "entry_price", "sl", "tp", "sl_amount", "tp_amount", "resistance_type"]])
+    # df_03["style"] = df_03["name"].isin(df_02["name"]).map({True: "green", False: "red"})
+    keep_df = pd.DataFrame(KEEP_PURGED_DATA["keep"]) # change by file or rest api..
+
+    # stocks_df["style"] = stocks_df["ticker"].isin(keep_df["ticker"]).map({True: "green", False: "red"})
+
+    signal_table = df_to_table_ritch(stocks_df[["ticker", "date", "entry_price", "sl", "tp", "sl_amount", "tp_amount", "resistance_type", "style"]])
     console.print(signal_table)
 
     input("\nEnter para volver...")
