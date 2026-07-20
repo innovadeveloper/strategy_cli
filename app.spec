@@ -5,7 +5,7 @@ from pathlib import Path
 from PyInstaller.utils.hooks import collect_data_files, collect_submodules, collect_dynamic_libs
 
 # -- binary files
-lib = 'libmilib.dll' if sys.platform.startswith('win') else 'libmilib.dylib' if sys.platform.startswith('darwin') else 'libmilib.so'
+#lib = 'libmilib.dll' if sys.platform.startswith('win') else 'libmilib.dylib' if sys.platform.startswith('darwin') else 'libmilib.so'
 
 # ── Data files ────────────────────────────────────────────────────────────────
 datas = []
@@ -14,7 +14,7 @@ datas += collect_data_files('backtesting')
 # ── Binary libs (macOS) ───────────────────────────────────────────────────────
 binaries = []
 binaries += collect_dynamic_libs('curl_cffi')
-binaries.append((f'/Users/mac/Documents/Projects/PythonProjects/strategy_cli/assets/c_language/{lib}', '.'))
+#binaries.append((f'/Users/mac/Documents/Projects/PythonProjects/strategy_cli/assets/c_language/{lib}', '.'))
 
 a = Analysis(
     ['src/plottext/app.py'],
