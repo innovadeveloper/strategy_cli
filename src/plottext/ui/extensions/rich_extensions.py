@@ -14,43 +14,6 @@ import pandas as pd
 
 console = Console()
 
-# def df_to_table_ritch(df, max_rows=None, index_name=None):
-#     """Muestra DataFrame con colores según columna 'style'"""
-#     table = Table(show_header=True, header_style="bold cyan")
-    
-#     # Configurar índice
-#     idx_label = index_name or df.index.name or "#"
-#     table.add_column(idx_label, style="bold cyan")
-    
-#     # Agregar columnas (excepto 'style' si no quieres mostrarla)
-#     for col in df.columns:
-#         if col != 'style':  # Ocultar columna 'style'
-#             table.add_column(str(col))
-    
-#     # Procesar filas
-#     for i, (idx, row) in enumerate(df.iterrows()):
-#         if max_rows and i >= max_rows:
-#             break
-        
-#         # ✅ Obtener el color de la columna 'style'
-#         color = row.get('style', 'white')  # Default: white si no existe
-        
-#         # Crear índice formateado
-#         idx_text = Text(str(idx), style=f"bold {color}")
-        
-#         # Formatear cada celda con el color correspondiente
-#         row_cells = []
-#         for col in df.columns:
-#             if col != 'style':  # No mostrar la columna 'style'
-#                 value = row[col]
-#                 # ✅ Aplicar el color a toda la celda
-#                 row_cells.append(Text(str(value), style=color))
-        
-#         # ✅ Aplicar el color a toda la fila
-#         table.add_row(idx_text, *row_cells, style=color)
-    
-#     return table
-
 
 def df_to_table_ritch(df, max_rows=None, precision=2, index_name=None):
     """
@@ -68,11 +31,15 @@ def df_to_table_ritch(df, max_rows=None, precision=2, index_name=None):
     idx_label = index_name or df.index.name or "Item"
     table.add_column(idx_label)
     
+    is_style_column = False
     # Agregar columnas
     for col in df.columns:
         # Detectar tipo de columna para estilos
         col_style = "green" if pd.api.types.is_numeric_dtype(df[col]) else "white"
-        table.add_column(str(col), style=col_style)
+        if(col != "style"):
+            table.add_column(str(col), style=col_style)
+        else :
+            is_style_column = True
     
     # Procesar filas
     for i, (idx, row) in enumerate(df.iterrows()):
@@ -82,12 +49,12 @@ def df_to_table_ritch(df, max_rows=None, precision=2, index_name=None):
         
         # Formatear índice
         idx_formatted = _format_value(idx)
-        # idx_text = Text(str(idx), style=f"bold {color}")
         
         # Formatear fila
         row_values = []
         for v in row:
-            row_values.append(_format_value(v, precision))
+            if(is_style_column and (v != "green" and v!= "red")):
+                row_values.append(_format_value(v, precision))
         
         table.add_row(idx_formatted, *row_values, style=color)
     

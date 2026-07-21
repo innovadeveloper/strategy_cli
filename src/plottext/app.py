@@ -14,28 +14,6 @@ from plottext.ui.screens.terminal_screens import home_screen, keep_purged_stocks
 
 # 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-kb
 
-from rich.console import Console
-from rich.table import Table
-from rich import box
-
-console = Console()
-
-table = Table(title="Datos con colores", box=box.ROUNDED)
-table.add_column("Ticker", style="cyan")
-table.add_column("Precio", justify="right")
-table.add_column("Cambio %", justify="right")
-table.add_column("Estado", justify="center")
-
-# Agregar filas con estilos específicos
-table.add_row("AAPL", "$178.50", "+1.2%", "[green]▲ SUBE[/green]")
-table.add_row("GOOGL", "$141.80", "-0.5%", "[red]▼ BAJA[/red]")
-table.add_row("MSFT", "$378.90", "+0.8%", "[yellow]● ESTABLE[/yellow]")
-
-# Toda la fila con un estilo
-table.add_row("TSLA", "$245.30", "+5.2%", "🚀 SUBE", style="bold green")
-
-console.print(table)
-
 # ========================
 # LOOP PRINCIPAL
 # ========================
