@@ -15,6 +15,15 @@ try:
     lib = ctypes.CDLL(os.path.join(os.path.dirname(sys.executable if getattr(sys, 'frozen', False) else __file__), lib_name))
 except:
     lib = ctypes.CDLL(lib_name)
+    
+# config_data = 'config_data.json'
+# try:
+#     # sys.executable => retorna el path del ejecutable si es un binario, o el path del intérprete si es un script
+#     # getattr(sys, 'frozen', False) => retorna True si es un binario, False si es un script
+#     # os.path.dirname(sys.executable if getattr(sys, 'frozen', False) else __file__) => retorna el directorio del ejecutable si es un binario, o el directorio del script si es un script
+#     lib = ctypes.CDLL(os.path.join(os.path.dirname(sys.executable if getattr(sys, 'frozen', False) else __file__), lib_name))
+# except:
+#     lib = ctypes.CDLL(lib_name)
 
 # binaries.append((f'/tmp/strategy_cli/{lib}', '.'))
 

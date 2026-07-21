@@ -10,6 +10,7 @@ import pandas as pd
 import yfinance as yf
 import logging
 import asyncio
+from plottext.domain.utilities.config import load_config, config
 
 logging.getLogger('yfinance').setLevel(logging.CRITICAL)
 
@@ -19,21 +20,21 @@ logging.getLogger('yfinance').setLevel(logging.CRITICAL)
 # Fallback fijo por si Wikipedia cambia de formato o no hay internet en el
 # momento de correr esto. No es necesariamente 100% actual -- siempre que
 # haya internet, la función intenta primero traer la lista en vivo.
-_NASDAQ100_FALLBACK = [
-    "AAPL", "MSFT", "AMZN", "NVDA", "GOOGL", "GOOG", "META", "TSLA", "AVGO", "COST",
-    "NFLX", "AMD", "PEP", "ADBE", "CSCO", "TMUS", "INTC", "QCOM", "AMGN", "INTU",
-    "TXN", "CMCSA", "HON", "AMAT", "BKNG", "SBUX", "ISRG", "VRTX", "MDLZ", "GILD",
-    "ADI", "REGN", "PANW", "LRCX", "PYPL", "MU", "SNPS", "CDNS", "KLAC", "MELI",
-    "ASML", "CSX", "MAR", "ORLY", "PDD", "CTAS", "CRWD", "ABNB", "FTNT", "ADP",
-    "NXPI", "WDAY", "ROP", "MNST", "PCAR", "CHTR", "MCHP", "AEP", "DXCM", "PAYX",
-    "ODFL", "ROST", "KDP", "EXC", "IDXX", "CPRT", "FAST", "VRSK", "BIIB", "CTSH",
-    "XEL", "EA", "CSGP", "GEHC", "DDOG", "TTD", "ON", "ZS", "TEAM",
-    "FANG", "BKR", "GFS", "MRVL", "DASH", "CDW", "WBD", "ILMN", "LULU", "KHC",
-    # CARTERA 2: Nasdaq + S&P 500 (diversificación EEUU)
-    "JPM", "BAC", "V", "JNJ", "UNH", "PFE", "XOM", "CVX", "WMT", "PG", "MCD", "CAT", "GE", "KO", "HD",
-    # # CARTERA 3: Nasdaq + S&P + Internacional (diversificación global)
-    "NVO", "SAP", "BABA", "TSM", "TM",
-]
+# _NASDAQ100_FALLBACK = [
+#     "AAPL", "MSFT", "AMZN", "NVDA", "GOOGL", "GOOG", "META", "TSLA", "AVGO", "COST",
+#     "NFLX", "AMD", "PEP", "ADBE", "CSCO", "TMUS", "INTC", "QCOM", "AMGN", "INTU",
+#     "TXN", "CMCSA", "HON", "AMAT", "BKNG", "SBUX", "ISRG", "VRTX", "MDLZ", "GILD",
+#     "ADI", "REGN", "PANW", "LRCX", "PYPL", "MU", "SNPS", "CDNS", "KLAC", "MELI",
+#     "ASML", "CSX", "MAR", "ORLY", "PDD", "CTAS", "CRWD", "ABNB", "FTNT", "ADP",
+#     "NXPI", "WDAY", "ROP", "MNST", "PCAR", "CHTR", "MCHP", "AEP", "DXCM", "PAYX",
+#     "ODFL", "ROST", "KDP", "EXC", "IDXX", "CPRT", "FAST", "VRSK", "BIIB", "CTSH",
+#     "XEL", "EA", "CSGP", "GEHC", "DDOG", "TTD", "ON", "ZS", "TEAM",
+#     "FANG", "BKR", "GFS", "MRVL", "DASH", "CDW", "WBD", "ILMN", "LULU", "KHC",
+#     # CARTERA 2: Nasdaq + S&P 500 (diversificación EEUU)
+#     "JPM", "BAC", "V", "JNJ", "UNH", "PFE", "XOM", "CVX", "WMT", "PG", "MCD", "CAT", "GE", "KO", "HD",
+#     # # CARTERA 3: Nasdaq + S&P + Internacional (diversificación global)
+#     "NVO", "SAP", "BABA", "TSM", "TM",
+# ]
 
 
 def get_nasdaq100_tickers(use_live=True):
@@ -42,6 +43,7 @@ def get_nasdaq100_tickers(use_live=True):
     Si use_live=True intenta leer la tabla actual desde Wikipedia; si falla
     por cualquier motivo (sin internet, cambio de formato), cae al fallback.
     """
+    stocks_dict = config()["stocks"]
     if use_live:
         try:
             tablas = pd.read_html("https://en.wikipedia.org/wiki/Nasdaq-100")
@@ -53,7 +55,7 @@ def get_nasdaq100_tickers(use_live=True):
             return sorted(set(tickers))
         except Exception as e:
             print(f"No se pudo obtener la lista en vivo ({e}). Usando fallback fijo.")
-    return sorted(set(_NASDAQ100_FALLBACK))
+    return sorted(set(stocks_dict))
 
 
 # =====================================================================
@@ -193,20 +195,20 @@ async def get_nasdaq100_data_async(period="1y", interval="1d", force_download=Fa
 
 
 # Tu diccionario original
-KEEP_PURGED_DATA = {
-    'keep': ['AAPL', 'AMD', 'AMZN', 'AVGO', 'CAT', 'CSCO', 'CSX', 'IDXX', 
-             'JPM', 'KLAC', 'META', 'MNST', 'MU', 'NFLX', 'NVDA', 'PDD', 
-             'TMUS', 'TSM', 'VRTX', 'ZS'],
-    'purge': ['ADBE', 'ADI', 'ADP', 'AEP', 'AMAT', 'AMGN', 'ASML', 'BABA', 
-              'BAC', 'BIIB', 'BKNG', 'BKR', 'CDNS', 'CDW', 'CHTR', 'CMCSA', 
-              'COST', 'CPRT', 'CRWD', 'CSGP', 'CTAS', 'CTSH', 'CVX', 'DDOG', 
-              'DXCM', 'EA', 'EXC', 'FANG', 'FAST', 'FTNT', 'GE', 'GILD', 
-              'GOOG', 'GOOGL', 'HD', 'HON', 'ILMN', 'INTC', 'INTU', 'ISRG', 
-              'JNJ', 'KDP', 'KHC', 'KO', 'LRCX', 'LULU', 'MAR', 'MCD', 
-              'MCHP', 'MDLZ', 'MELI', 'MRVL', 'MSFT', 'NVO', 'NXPI', 'ODFL', 
-              'ON', 'ORLY', 'PANW', 'PAYX', 'PCAR', 'PEP', 'PFE', 'PG', 
-              'PYPL', 'QCOM', 'REGN', 'ROP', 'ROST', 'SAP', 'SBUX', 'SNPS', 
-              'TEAM', 'TM', 'TSLA', 'TTD', 'TXN', 'UNH', 'V', 'VRSK', 
-              'WBD', 'WDAY', 'WMT', 'XEL', 'XOM', 'ABNB', 'DASH', 'GFS', 
-              'GEHC']
-}
+# KEEP_PURGED_DATA = {
+#     'keep': ['AAPL', 'AMD', 'AMZN', 'AVGO', 'CAT', 'CSCO', 'CSX', 'IDXX', 
+#              'JPM', 'KLAC', 'META', 'MNST', 'MU', 'NFLX', 'NVDA', 'PDD', 
+#              'TMUS', 'TSM', 'VRTX', 'ZS'],
+#     'purge': ['ADBE', 'ADI', 'ADP', 'AEP', 'AMAT', 'AMGN', 'ASML', 'BABA', 
+#               'BAC', 'BIIB', 'BKNG', 'BKR', 'CDNS', 'CDW', 'CHTR', 'CMCSA', 
+#               'COST', 'CPRT', 'CRWD', 'CSGP', 'CTAS', 'CTSH', 'CVX', 'DDOG', 
+#               'DXCM', 'EA', 'EXC', 'FANG', 'FAST', 'FTNT', 'GE', 'GILD', 
+#               'GOOG', 'GOOGL', 'HD', 'HON', 'ILMN', 'INTC', 'INTU', 'ISRG', 
+#               'JNJ', 'KDP', 'KHC', 'KO', 'LRCX', 'LULU', 'MAR', 'MCD', 
+#               'MCHP', 'MDLZ', 'MELI', 'MRVL', 'MSFT', 'NVO', 'NXPI', 'ODFL', 
+#               'ON', 'ORLY', 'PANW', 'PAYX', 'PCAR', 'PEP', 'PFE', 'PG', 
+#               'PYPL', 'QCOM', 'REGN', 'ROP', 'ROST', 'SAP', 'SBUX', 'SNPS', 
+#               'TEAM', 'TM', 'TSLA', 'TTD', 'TXN', 'UNH', 'V', 'VRSK', 
+#               'WBD', 'WDAY', 'WMT', 'XEL', 'XOM', 'ABNB', 'DASH', 'GFS', 
+#               'GEHC']
+# }

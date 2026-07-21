@@ -55,7 +55,9 @@ def df_to_table_ritch(df, max_rows=None, precision=2, index_name=None):
         for v in row:
             if(is_style_column and (v != "green" and v!= "red")):
                 row_values.append(_format_value(v, precision))
-        
+            elif (is_style_column == False) :
+                row_values.append(_format_value(v, precision))
+
         table.add_row(idx_formatted, *row_values, style=color)
     
     return table
