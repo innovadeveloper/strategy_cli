@@ -89,7 +89,7 @@ def df_to_table_ritch(df, max_rows=None, precision=2, index_name=None):
         for v in row:
             row_values.append(_format_value(v, precision))
         
-        table.add_row(idx_formatted, *row_values)
+        table.add_row(idx_formatted, *row_values, style=color)
     
     return table
 

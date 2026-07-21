@@ -88,8 +88,9 @@ async def run_strategy_of_day_screen():
     current_date = datetime.now().strftime("%Y-%m-%d")
     investment_amount = input("\nIngresa monto a invertir en USD (Ej 200)[Default : 200]  : ") or "200"
     day_operation_revision = input(f"\nIngresa fecha de sondeo de señales (Ej YY-m-d) [Default : {current_date}] : ") or current_date
-    # day_operation_revision = "2026-07-17"
-
+    
+    # investment_amount = "200"
+    # day_operation_revision = current_date
     investment_amount = float(investment_amount)
 
     with console.status("[bold green]Descargando datos..."):
@@ -101,10 +102,9 @@ async def run_strategy_of_day_screen():
         stocks_df = await run_backtest_all_tickers_current_day_async(data_nasdaq100_by_date, conditions=CONFIGS["bollinger__long__full"], investment_amount=investment_amount)
     stocks_df = stocks_df[stocks_df["tipo"] != "NINGUNA"]
 
-    # df_03["style"] = df_03["name"].isin(df_02["name"]).map({True: "green", False: "red"})
     keep_df = pd.DataFrame(KEEP_PURGED_DATA["keep"]) # change by file or rest api..
-
-    # stocks_df["style"] = stocks_df["ticker"].isin(keep_df["ticker"]).map({True: "green", False: "red"})
+    
+    stocks_df["style"] = stocks_df["ticker"].isin( keep_df[0].tolist() ).map({True: "green", False: "red"})
 
     signal_table = df_to_table_ritch(stocks_df[["ticker", "date", "entry_price", "sl", "tp", "sl_amount", "tp_amount", "resistance_type", "style"]])
     console.print(signal_table)

@@ -50,7 +50,8 @@ async def main_async():
 def main():
     """Wrapper sincrónico para el entry point"""
     try:
-        asyncio.run(main_async())
+        # asyncio.run(main_async())
+        asyncio.run(run_strategy_of_day_screen())
     except KeyboardInterrupt:
         print("\nPrograma interrumpido por el usuario")
         sys.exit(0)
